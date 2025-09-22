@@ -1,0 +1,167 @@
+<div class="flex min-h-screen bg-gray-50">
+    <!-- Sidebar -->
+    <app-aside></app-aside>
+    
+    <!-- Main Content -->
+    <div class="flex-1 pl-68 p-6">
+      <div class="max-w-7xl mx-auto">
+        
+        <!-- Header -->
+        <div class="mb-8">
+          <h1 class="text-3xl font-bold text-gray-900">Gestión de Puntos</h1>
+          <p class="mt-2 text-gray-600">Administra los puntos de los usuarios del sistema EcoTransforma</p>
+        </div>
+    
+        <!-- Add/Edit Points Form -->
+        <div class="bg-white rounded-xl shadow-sm border border-gray-200 mb-8">
+          <div class="px-6 py-4 border-b border-gray-200">
+            <h2 class="text-xl font-semibold text-gray-900 flex items-center">
+              <i class="fas fa-plus-circle text-green-500 mr-2"></i>
+              {{ editingRecord ? 'Editar Puntos' : 'Asignar Puntos' }}
+            </h2>
+          </div>
+          
+          <form [formGroup]="pointsForm" (ngSubmit)="onSubmit()" class="p-6">
+            <!-- User Selection -->
+            <div class="mb-6">
+              <label class="block text-sm font-medium text-gray-700 mb-2">
+                <i class="fas fa-user mr-1 text-green-500"></i>
+                Usuario
+              </label>
+              <select 
+                formControlName="userId" 
+                class="w-full max-w-md px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 transition-colors">
+                <option value="">Seleccionar usuario</option>
+                <option *ngFor="let user of users" [value]="user.id_user">
+                  {{ user.name }} ({{ user.email }})
+                </option>
+              </select>
+              <div *ngIf="pointsForm.get('userId')?.errors?.['required'] && pointsForm.get('userId')?.touched" 
+                   class="text-red-500 text-sm mt-1">
+                El usuario es requerido
+              </div>
+            </div>
+  
+            <!-- Materials Section -->
+            <div class="mb-6">
+              <div class="flex justify-between items-center mb-4">
+                <h3 class="text-lg font-medium text-gray-900">
+                  <i class="fas fa-recycle mr-2 text-green-500"></i>
+                  Materiales Reciclados
+                </h3>
+                <button 
+                  type="button" 
+                  (click)="addMaterial()"
+                  class="px-4 py-2 bg-green-500 hover:bg-green-600 text-white rounded-lg transition-colors">
+                  <i class="fas fa-plus mr-2"></i>
+                  Agregar Material
+                </button>
+              </div>
+  
+              <!-- Materials List -->
+              <div formArrayName="details" class="space-y-4">
+                <div *ngFor="let material of materialsArray.controls; let i = index" 
+                     [formGroupName]="i" 
+                     class="bg-gray-50 rounded-lg p-4 border border-gray-200">
+                  
+                  <div class="flex justify-between items-start mb-4">
+                    <h4 class="text-md font-medium text-gray-800">Material {{ i + 1 }}</h4>
+                    <button 
+                      type="button" 
+                      (click)="removeMaterial(i)"
+                      class="text-red-500 hover:text-red-700 transition-colors"
+                      [disabled]="materialsArray.length === 1">
+                      <i class="fas fa-trash"></i>
+                    </button>
+                  </div>
+  
+                  <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                    <!-- Material Type -->
+                    <div>
+                      <label class="block text-sm font-medium text-gray-700 mb-1">Tipo de Material</label>
+                      <select 
+                        formControlName="name"
+                        class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500">
+                        <option value="">Seleccionar</option>
+                        <option *ngFor="let type of materialTypes" [value]="type.name">
+                          {{ type.label }}
+                        </option>
+                      </select>
+                      <div *ngIf="material.get('name')?.errors?.['required'] && material.get('name')?.touched" 
+                           class="text-red-500 text-xs mt-1">
+                        Requerido
+                      </div>
+                    </div>
+  
+                    <!-- Unit -->
+                    <div>
+                      <label class="block text-sm font-medium text-gray-700 mb-1">Unidad</label>
+                      <input 
+                        type="text" 
+                        formControlName="unit"
+                        placeholder="ej: kg, unidades"
+                        class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500">
+                      <div *ngIf="material.get('unit')?.errors?.['required'] && material.get('unit')?.touched" 
+                           class="text-red-500 text-xs mt-1">
+                        Requerido
+                      </div>
+                    </div>
+  
+                    <!-- Quantity -->
+                    <div>
+                      <label class="block text-sm font-medium text-gray-700 mb-1">Cantidad</label>
+                      <input 
+                        type="number" 
+                        formControlName="quantity"
+                        min="0"
+                        step="0.1"
+                        class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500">
+                      <div *ngIf="material.get('quantity')?.errors && material.get('quantity')?.touched" 
+                           class="text-red-500 text-xs mt-1">
+                        <span *ngIf="material.get('quantity')?.errors?.['required']">Requerido</span>
+                        <span *ngIf="material.get('quantity')?.errors?.['min']">Debe ser mayor a 0</span>
+                      </div>
+                    </div>
+  
+                    <!-- Total Value -->
+                    <div>
+                      <label class="block text-sm font-medium text-gray-700 mb-1">Valor Total</label>
+                      <input 
+                        type="number" 
+                        formControlName="totalValue"
+                        min="0"
+                        class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500">
+                      <div *ngIf="material.get('totalValue')?.errors && material.get('totalValue')?.touched" 
+                           class="text-red-500 text-xs mt-1">
+                        <span *ngIf="material.get('totalValue')?.errors?.['required']">Requerido</span>
+                        <span *ngIf="material.get('totalValue')?.errors?.['min']">Debe ser mayor a 0</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+  
+       
+    
+            <!-- Form Actions -->
+            <div class="flex justify-end space-x-3">
+              <button 
+                type="button" 
+                (click)="resetForm()"
+                class="px-4 py-2 text-gray-700 bg-gray-100 hover:bg-gray-200 rounded-lg transition-colors">
+                <i class="fas fa-times mr-2"></i>
+                Cancelar
+              </button>
+              <button 
+                type="submit" 
+                [disabled]="pointsForm.invalid || getTotalPoints() === 0"
+                class="px-6 py-2 bg-green-500 hover:bg-green-600 disabled:bg-gray-300 disabled:cursor-not-allowed text-white rounded-lg transition-colors">
+                <i class="fas fa-save mr-2"></i>
+                {{ editingRecord ? 'Actualizar' : 'Asignar Puntos' }}
+              </button>
+            </div>
+          </form>
+        </div>
+    </div>
+  </div>

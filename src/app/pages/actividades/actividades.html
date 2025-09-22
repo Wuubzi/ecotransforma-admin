@@ -1,0 +1,56 @@
+
+<app-aside></app-aside>
+<main class="pl-64 min-h-screen bg-gray-50">
+    <div class="p-8">
+      <!-- Header -->
+      <div class="mb-8">
+        <h1 class="text-3xl font-bold text-gray-900 mb-2">Actividades</h1>
+        <p class="text-gray-600">Gestiona las actividades programadas en el sistema EcoTransforma</p>
+      </div>
+  
+    
+    
+      <!-- Actividades Table -->
+      <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
+        <div class="overflow-x-auto">
+          <table class="min-w-full divide-y divide-gray-200">
+            <thead class="bg-gray-50">
+              <tr>
+                <th class="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Solicitante</th>
+                <th class="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Lugar</th>
+                <th class="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Tipo de Actividad</th>
+              </tr>
+            </thead>
+            <tbody class="bg-white divide-y divide-gray-200">
+              <tr *ngFor="let actividad of actividades" class="hover:bg-gray-50 transition-colors duration-150">
+                <td class="px-6 py-4">
+                  <div class="flex flex-col">
+                    <div class="text-sm font-medium text-gray-900">{{actividad.names}}</div>
+                    <div class="text-sm text-gray-500">{{actividad.email}}</div>
+                    <div class="text-xs text-gray-400 mt-1">{{actividad.phone_number}}</div>
+                  </div>
+                </td>
+                <td class="px-6 py-4">
+                  <div class="flex flex-col">
+                    <div class="text-sm font-medium text-gray-900">{{actividad.place}}</div>
+                    <div class="text-sm text-gray-500">{{actividad.address}}</div>
+                    <div class="mt-1">
+                      <span [class]="'px-2 py-1 text-xs font-semibold rounded-full ' + getPlaceTypeColor(actividad.place)">
+                        {{actividad.place}}
+                      </span>
+                    </div>
+                  </div>
+                </td>
+                <td class="px-6 py-4">
+                  <div class="flex flex-col">
+                    <div class="text-sm font-medium text-gray-900">{{actividad.type_activity}}</div>
+                    <div class="text-sm text-gray-500 mt-1">Registrado: {{actividad.createdAt}}</div>
+                  </div>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </main>

@@ -1,0 +1,45 @@
+<!-- aside.component.html -->
+<aside class="fixed top-0 left-0 bg-white w-64 h-screen shadow-lg border-r border-gray-200 z-10">
+    <!-- Logo Section -->
+    <div class="flex items-center p-6 border-b border-gray-100">
+        <div>
+            <h1 class="text-lg font-bold text-gray-800">EcoTransforma</h1>
+            <p class="text-xs text-gray-500">Dashboard Admin</p>
+        </div>
+    </div>
+    
+    <!-- Navigation Menu -->
+    <nav class="mt-6">
+        <div class="px-6 mb-4">
+            <h3 class="text-xs font-semibold text-gray-400 uppercase tracking-wider">MENÚ PRINCIPAL</h3>
+        </div>
+        
+        <ul class="space-y-1 px-4">
+            <li *ngFor="let item of menuItems">
+                <a 
+                    [routerLink]="item.route"
+                    routerLinkActive="bg-green-500 text-white"
+                    [routerLinkActiveOptions]="{exact: true}"
+                    class="flex items-center px-4 py-3 text-gray-700 rounded-lg hover:bg-green-50 hover:text-green-600 transition-colors group"
+                    #rla="routerLinkActive">
+                    <i 
+                        [class]="item.icon + ' mr-3'"
+                        [ngClass]="{
+                            'text-white': rla.isActive,
+                            'text-gray-400 group-hover:text-green-600': !rla.isActive
+                        }">
+                    </i>
+                    <span>{{ item.label }}</span>
+                </a>
+            </li>
+            <li>
+                <a 
+                    (click)="logout()" 
+                    class="flex items-center px-4 py-3 text-gray-700 rounded-lg hover:bg-red-50 hover:text-red-600 transition-colors group cursor-pointer">
+                    <i class="fas fa-sign-out-alt mr-3 text-gray-400 group-hover:text-red-600"></i>
+                    <span>Cerrar Sesión</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
+</aside>
